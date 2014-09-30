@@ -7,6 +7,9 @@
 
 #aliases
 alias ls='ls --color=auto'
+alias grep='grep --exclude=\*~'
+
+#pacman
 alias pacin='sudo pacman -S'
 alias pacout='sudo pacman -Rns'
 alias pacs='pacman -Ss'
