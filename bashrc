@@ -38,6 +38,8 @@ alias tgzx='tar -xvzf'
 alias tarc='tar -cvf'
 alias tarx='tar -xvf'
 
+alias update-grub='sudo grub-mkconfig -o /boot/grub/grub.cfg'
+
 
 alias pylab='ipython --pylab'
 
