@@ -5,11 +5,17 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-#aliases
+## aliases
+# general
 alias ls='ls --color=auto'
-alias grep='grep --exclude=\*~'
+alias l1='ls --color=auto -1'
+alias ll='ls --color=auto -al'
+alias grep='grep --color=auto --exclude=\*~'
+alias ..='cd ..'
+alias ...='cd ../..'
 
-#pacman
+
+# pacman
 alias pacin='sudo pacman -S'
 alias pacout='sudo pacman -Rns'
 alias pacs='pacman -Ss'
@@ -28,6 +34,7 @@ alias aurd='aurget -Sd'
 
 alias mics='makepkg -ics'
 
+# systemd
 alias enable='sudo systemctl enable'
 alias start='sudo systemctl start'
 alias disable='sudo systemctl disable'
@@ -51,17 +58,12 @@ alias vimaw='vim ~/.config/awesome/rc.lua'
 
 alias r='ranger'
 
-#redefines
+# other redefines
 alias nemo='nemo --no-desktop'
-# cd and ls in one
-cl() {
-if [[ -d "$1" ]]; then
-  cd "$1"
-  ls
-else
-  echo "bash: cl: '$1': Directory not found"
-fi
-}
+
+## functions
+cl() { cd "$1" && ls; }
+mc() { mkdir -p "$1" && cd "$1"; }
 
 #PS1='[\u@\h \W]\$ '
 #PS1='\[\e[1;32m\][\u@\h \W]\$\[\e[0m\] '
