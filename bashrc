@@ -56,8 +56,6 @@ alias ncpi='ncmpc --host=192.168.1.20'
 
 alias vimaw='vim ~/.config/awesome/rc.lua'
 
-alias r='ranger'
-
 # other redefines
 alias nemo='nemo --no-desktop'
 
@@ -65,6 +63,16 @@ alias nemo='nemo --no-desktop'
 cl() { cd "$1" && ls; }
 mc() { mkdir -p "$1" && cd "$1"; }
 vimsh() { [ ! -e "$1" ] && echo "#!/usr/bin/bash" > "$1" && chmod +x "$1" && vim "$1"; }
+
+function r {
+    tempfile='/tmp/chosendir'
+    /usr/bin/ranger --choosedir="$tempfile" "${@:-$(pwd)}"
+    test -f "$tempfile" &&
+    if [ "$(cat -- "$tempfile")" != "$(echo -n `pwd`)" ]; then
+        cd -- "$(cat "$tempfile")"
+    fi
+    rm -f -- "$tempfile"
+}
 
 #PS1='[\u@\h \W]\$ '
 #PS1='\[\e[1;32m\][\u@\h \W]\$\[\e[0m\] '
