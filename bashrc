@@ -64,6 +64,7 @@ alias nemo='nemo --no-desktop'
 ## functions
 cl() { cd "$1" && ls; }
 mc() { mkdir -p "$1" && cd "$1"; }
+vimsh() { [ ! -e "$1" ] && echo "#!/usr/bin/bash" > "$1" && chmod +x "$1" && vim "$1"; }
 
 #PS1='[\u@\h \W]\$ '
 #PS1='\[\e[1;32m\][\u@\h \W]\$\[\e[0m\] '
