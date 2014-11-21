@@ -480,24 +480,10 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 posix.setenv("QT_STYLE_OVERRIDE", "gtk")
 
-start_status_file_path = awful.util.getdir("cache") .. "/start_status"
-
--- Callback to set start status on exit
-function set_start_status (restart)
-    local start_status_file = io.open(start_status_file_path, "w")
-    if restart  == true then
-        start_status_file:write("restart")
-    else
-        start_status_file:write("start")
-    end
-    start_status_file:flush()
-    start_status_file:close()
-end
-
--- Autostart applications
-local start_status_file = io.open(start_status_file_path, "r")
-if not start_status_file or (start_status_file:read("*a") == "start" and start_status_file:close()) then
+local xresources_name = "awesome.started"
+local xresources = awful.util.pread("xrdb -query")
+if not xresources:match(xresources_name) then
+    -- Execute once for X server
     os.execute("dex -a -e Awesome")
 end
-
-awesome.connect_signal("exit", set_start_status)
+awful.util.spawn_with_shell("xrdb -merge <<< " .. "'" .. xresources_name .. ": true'")
