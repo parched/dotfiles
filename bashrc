@@ -9,7 +9,7 @@
 # general
 alias ls='ls --color=auto'
 alias l1='ls --color=auto -1'
-alias ll='ls --color=auto -al'
+alias ll='ls --color=auto -alh'
 alias grep='grep --color=auto --exclude=\*~'
 alias ..='cd ..'
 alias ...='cd ../..'
