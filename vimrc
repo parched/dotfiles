@@ -98,9 +98,13 @@ endif
 
 " My stuff
 set grepprg=grep\ -nH\ $*
+
+" TeX
 let g:tex_flavor = "latex"
 let g:Tex_DefaultTargetFormat='pdf'
 let g:Tex_MultipleCompileFormats='dvi,pdf,ps'
+let g:Tex_ViewRule_pdf='evince 2>/dev/null'
+
 set autowrite
 set spelllang=en_nz
 
