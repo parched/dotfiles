@@ -37,6 +37,7 @@ alias mics='makepkg -ics'
 # systemd
 alias enable='sudo systemctl enable'
 alias start='sudo systemctl start'
+alias restart='sudo systemctl restart'
 alias disable='sudo systemctl disable'
 alias stop='sudo systemctl stop'
 
