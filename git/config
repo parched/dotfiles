@@ -1,0 +1,9 @@
+[user]
+	name = James Duley
+	email = jagduley@gmail.com
+[color]
+	ui = true
+[push]
+	default = upstream
+[alias]
+	loga = log --graph --all --decorate --oneline
