@@ -7,3 +7,5 @@
 	default = upstream
 [alias]
 	loga = log --graph --all --decorate --oneline
+[rebase]
+	autoSquash = true
