@@ -1,11 +1,22 @@
-[user]
-	name = James Duley
-	email = jagduley@gmail.com
+[include]
+	path = ~/.config/gitconfig.user
 [color]
 	ui = true
 [push]
 	default = upstream
 [alias]
 	loga = log --graph --all --decorate --oneline
+	logg = log --graph --decorate --oneline
+	logs = log --stat
+	diffc = diff --cached
+	dc = diff --cached
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	rb = rebase
+	rbi = rebase -i
+	rbc = rebase --continue
+	rba = rebase --abort
 [rebase]
 	autoSquash = true
