@@ -86,5 +86,5 @@ PS1="\[\e[1;35m\][\[\e[1;31m\]\u\[\e[1;32m\]@\h \[\e[1;33m\]\W\[\e[1;34m\]\$(__g
 #PS1="\[\$(if [[ \$? != 0 ]]; then echo \"\[\e[1;37m\]\342\234\227 \"; fi)\e[1;35m\][\e[1;31m\]\u\e[1;32m\]@\h \e[1;33m\]\W\e[1;34m\]$(__git_ps1)\e[1;35m\]]\$ \[\e[0m\]"
 
 export EDITOR=vim
-export PATH=$HOME/.local/bin:$PATH
+export PATH=$HOME/.local/bin:$HOME/.cargo/bin:$PATH
 #export LD_LIBRARY_PATH=$HOME/.local/lib
