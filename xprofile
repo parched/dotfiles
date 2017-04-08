@@ -1,0 +1,5 @@
+# set flat acceleration profile
+xinput --set-prop 'pointer:Laview Technology Mionix Naos 7000' 'libinput Accel Profile Enabled' 0 1
+
+# set caps lock to be escape
+setxkbmap -option caps:escape
