@@ -82,7 +82,7 @@ export GIT_PS1_SHOWSTASHSTATE=y
 export GIT_PS1_SHOWUNTRACKEDFILES=y
 source /usr/share/git/completion/git-prompt.sh
 #PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
-PS1="\[\e[1;35m\][\[\e[1;31m\]\u\[\e[1;32m\]@\h \[\e[1;33m\]\W\[\e[1;34m\]\$(__git_ps1)\[\e[1;35m\]]\$ \[\e[0m\]"
+PS1='\[\e[1;35m\][\[\e[1;31m\]\u\[\e[1;32m\]@\h \[\e[1;33m\]\W\[\e[1;34m\]$(__git_ps1)\[\e[1;35m\]]\$\[\e[0m\] '
 #PS1="\[\$(if [[ \$? != 0 ]]; then echo \"\[\e[1;37m\]\342\234\227 \"; fi)\e[1;35m\][\e[1;31m\]\u\e[1;32m\]@\h \e[1;33m\]\W\e[1;34m\]$(__git_ps1)\e[1;35m\]]\$ \[\e[0m\]"
 
 export EDITOR=vim
