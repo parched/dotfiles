@@ -1,5 +1,6 @@
 # set flat acceleration profile
-xinput --set-prop 'pointer:Laview Technology Mionix Naos 7000' 'libinput Accel Profile Enabled' 0 1
+xinput --set-prop 'pointer:Laview Technology Mionix Naos 7000' 'libinput Accel Profile Enabled' 0 1 > /dev/null
+xinput --set-prop 'pointer:Lenovo Optical Mouse' 'libinput Accel Profile Enabled' 0 1 > /dev/null
 
 # set caps lock to be escape
 setxkbmap -option caps:escape
