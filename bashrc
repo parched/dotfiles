@@ -16,17 +16,17 @@ alias ...='cd ../..'
 
 
 # pacman
-alias pacin='sudo pacman -S'
-alias pacout='sudo pacman -Rns'
-alias pacs='pacman -Ss'
-alias pacsg='pacman -Sg'
-alias pacupg='sudo pacman -Syu'
-alias pacupd='sudo pacman -Sy'
-alias pacinfo='pacman -Si'
-alias paclinfo='pacman -Qi'
-alias pacls='pacman -Qs'
-alias pacfiles='pacman -Ql'
-alias pacown='pacman -Qo'
+alias pacin='sudo pacman --color auto -S'
+alias pacout='sudo pacman --color auto -Rns'
+alias pacs='pacman --color auto -Ss'
+alias pacsg='pacman --color auto -Sg'
+alias pacupg='sudo pacman --color auto -Syu'
+alias pacupd='sudo pacman --color auto -Sy'
+alias pacinfo='pacman --color auto -Si'
+alias paclinfo='pacman --color auto -Qi'
+alias pacls='pacman --color auto -Qs'
+alias pacfiles='pacman --color auto -Ql'
+alias pacown='pacman --color auto -Qo'
 alias aurin='aurget -Sy'
 alias aurs='aurget -Ss'
 alias aurupg='aurget -Syu'
@@ -59,6 +59,8 @@ alias vimaw='vim ~/.config/awesome/rc.lua'
 
 # other redefines
 alias nemo='nemo --no-desktop'
+
+eval $(thefuck --alias)
 
 ## functions
 cl() { cd "$1" && ls; }

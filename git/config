@@ -20,3 +20,6 @@
 	rba = rebase --abort
 [rebase]
 	autoSquash = true
+	autoStash = true
+[advice]
+	detachedHead = false
