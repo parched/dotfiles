@@ -42,7 +42,7 @@ end
 beautiful.init(awful.util.get_themes_dir() .. "default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "urxvtc"
+terminal = "urxvt"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -111,8 +111,8 @@ myawesomemenu = {
 powermenu = {
 	{"switch user", "dm-tool switch-to-greeter"},
 	{"logout", function() awesome.quit() end},
-	{"suspend", "systemctl suspend"},
-	{"hibernate", "systemctl hibernate"},
+	{"lock", "slock"},
+	{"suspend", "slock systemctl suspend"},
 	{"reboot", "systemctl reboot"},
 	{"poweroff", "systemctl poweroff"}
 }
@@ -198,7 +198,8 @@ screen.connect_signal("property::geometry", set_wallpaper)
 
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
-    set_wallpaper(s)
+    -- set_wallpaper(s)
+    gears.wallpaper.set(gears.color.create_solid_pattern(nil))
 
     -- Each screen has its own tag table.
     awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
