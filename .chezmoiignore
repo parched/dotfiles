@@ -1,2 +1,4 @@
 # ignore everything then enable things selectively
 /**/*
+!/.config/
+!/.config/**/*
