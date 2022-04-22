@@ -21,5 +21,7 @@
 [rebase]
 	autoSquash = true
 	autoStash = true
+[interactive]
+	singleKey = true
 [advice]
 	detachedHead = false
