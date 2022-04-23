@@ -19,5 +19,13 @@ fi
 
 # POSIX way to get script's dir: https://stackoverflow.com/a/29834779/12156188
 script_dir="$(cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P)"
+share="$HOME/.local/share"
+chezmoi_source="$share/chezmoi"
+if [ ! -e "$chezmoi_source" ]; then
+  echo "Linking $chezmoi_source to $script_dir"
+  # This avoids needing the -S argument
+  mkdir -p "$share"
+  ln -s "$script_dir" "$chezmoi_source"
+fi
 # exec: replace current process with chezmoi init
 exec "$chezmoi" init --apply "--source=$script_dir"
