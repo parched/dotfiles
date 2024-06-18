@@ -1,4 +1,12 @@
-# ignore everything then enable things selectively
-/**/*
-!/.config/
-!/.config/**/*
+/install.sh
+/LICENSE
+/README.md
+
+# a few things that predate chezmoi
+/awesome/
+/awesome/**/*
+/bashrc
+/gdbinit
+/vimrc
+/xprofile
+/Xresources
