@@ -2,6 +2,10 @@
 /LICENSE
 /README.md
 
+{{ if ne .chezmoi.os "windows" }}
+/AppData/**/*
+{{ end }}
+
 # a few things that predate chezmoi
 /awesome/
 /awesome/**/*
