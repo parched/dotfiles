@@ -4,13 +4,13 @@
 
 properties:
   resources:
-  ### Settings ###
+    ### Settings ###
 
-  - resource: Microsoft.Windows.Developer/DeveloperMode
-    directives:
-      description: Enable Developer Mode
-      allowPrerelease: true
-    settings:
-      Ensure: Present
+    - resource: Microsoft.Windows.Developer/DeveloperMode
+      directives:
+        description: Enable Developer Mode
+        allowPrerelease: true
+      settings:
+        Ensure: Present
 
   configurationVersion: 0.2.0
