@@ -127,9 +127,9 @@ properties:
         allowPrerelease: true
         securityContext: current
       settings:
-        id: "tummychow.get-absorb"
+        id: "tummychow.git-absorb"
         source: winget
-      id: tummychow.get-absorb
+      id: tummychow.git-absorb
 
     ### Productivity packages ###
     - resource: Microsoft.WinGet.DSC/WinGetPackage
