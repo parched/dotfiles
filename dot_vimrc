@@ -1,0 +1,6 @@
+" Remap space to act as control for certain commands in normal mode
+nnoremap <Space>v <C-v>
+nnoremap <Space>w <C-w>
+nnoremap <Space>o <C-o>
+nnoremap <Space>p <C-p>
+nnoremap <Space>r <C-r>
