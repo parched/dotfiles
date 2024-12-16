@@ -1,3 +1,5 @@
 {
-    "files.autoSave": "onFocusChange"
+  "vim.useCtrlKeys": false,
+  "vim.vimrc.enable": true,
+  "files.autoSave": "onFocusChange"
 }
