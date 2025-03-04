@@ -11,3 +11,5 @@ setx CARGO_HOME "J:\packages\cargo"
 setx MAVEN_OPTS "-Dmaven.repo.local=J:\packages\maven"
 
 setx GRADLE_USER_HOME "J:\packages\gradle"
+
+setx UV_CACHE_DIR "J:\packages\uv"
