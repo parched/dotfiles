@@ -78,22 +78,13 @@ properties:
       id: Schniz.fnm
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       directives:
-        description: Installing JetBrains.Rider
+        description: Installing JetBrains.Toolbox
         allowPrerelease: true
         securityContext: current
       settings:
-        id: "JetBrains.Rider"
+        id: "JetBrains.Toolbox"
         source: winget
-      id: JetBrains.Rider
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      directives:
-        description: Installing JetBrains.ReSharper
-        allowPrerelease: true
-        securityContext: current
-      settings:
-        id: "JetBrains.ReSharper"
-        source: winget
-      id: JetBrains.ReSharper
+      id: JetBrains.Toolbox
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       directives:
         description: Installing git absorb
