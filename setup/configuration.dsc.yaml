@@ -5,6 +5,13 @@
 properties:
   resources:
     ### Settings ###
+    - resource: Microsoft.Windows.Developer/DeveloperMode
+      directives:
+        description: Enable Developer Mode
+        allowPrerelease: true
+        securityContext: elevated
+      settings:
+        Ensure: Present
     - resource: Microsoft.Windows.Developer/UserAccessControl
       id: UserAccessControl
       directives:
