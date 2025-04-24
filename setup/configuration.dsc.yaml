@@ -131,4 +131,34 @@ properties:
         source: winget
       id: twpayne.chezmoi
 
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      directives:
+        description: Installing BurntSushi.ripgrep.MSVC
+        allowPrerelease: true
+        securityContext: current
+      settings:
+        id: BurntSushi.ripgrep.MSVC
+        source: winget
+      id: BurntSushi.ripgrep.MSVC
+
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      directives:
+        description: Installing sharkdp.fd
+        allowPrerelease: true
+        securityContext: current
+      settings:
+        id: sharkdp.fd
+        source: winget
+      id: sharkdp.fd
+
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      directives:
+        description: Installing jqlang.jq
+        allowPrerelease: true
+        securityContext: current
+      settings:
+        id: jqlang.jq
+        source: winget
+      id: jqlang.jq
+
   configurationVersion: 0.2.0
