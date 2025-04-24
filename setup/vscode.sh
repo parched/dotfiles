@@ -6,7 +6,6 @@ extensions=(
     "ms-python.python"
     "esbenp.prettier-vscode"
     "dbaeumer.vscode-eslint"
-    "eamodio.gitlens"
     "streetsidesoftware.code-spell-checker"
     "redhat.vscode-yaml"
     "github.copilot"
