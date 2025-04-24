@@ -76,13 +76,13 @@ properties:
       id: astral-sh.uv
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       directives:
-        description: Installing Schniz.fnm
+        description: Installing Volta.Volta
         allowPrerelease: true
         securityContext: current
       settings:
-        id: "Schniz.fnm"
+        id: "Volta.Volta"
         source: winget
-      id: Schniz.fnm
+      id: Volta.Volta
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       directives:
         description: Installing JetBrains.Toolbox
