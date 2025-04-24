@@ -101,6 +101,15 @@ properties:
         id: "tummychow.git-absorb"
         source: winget
       id: tummychow.git-absorb
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      directives:
+        description: Installing Rustlang.Rustup
+        allowPrerelease: true
+        securityContext: current
+      settings:
+        id: Rustlang.Rustup
+        source: winget
+      id: Rustlang.Rustup
 
     ### Productivity packages ###
     - resource: Microsoft.WinGet.DSC/WinGetPackage
