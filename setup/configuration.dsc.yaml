@@ -110,6 +110,15 @@ properties:
         id: Rustlang.Rustup
         source: winget
       id: Rustlang.Rustup
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      directives:
+        description: Installing Redhat.Podman-Desktop
+        allowPrerelease: true
+        securityContext: current
+      settings:
+        id: Redhat.Podman-Desktop
+        source: winget
+      id: Redhat.Podman-Desktop
 
     ### Productivity packages ###
     - resource: Microsoft.WinGet.DSC/WinGetPackage
