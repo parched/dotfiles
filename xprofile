@@ -1,5 +1,0 @@
-# set flat acceleration profile
-xinput list | grep -P -o '(?<=id=)[0-9]+(?=.*slave.*pointer)' | xargs -I % xinput --set-prop % 'libinput Accel Profile Enabled' 0 1 &> /dev/null
-
-# set caps lock to be escape
-setxkbmap -option caps:escape
