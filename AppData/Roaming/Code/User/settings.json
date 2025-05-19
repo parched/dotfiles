@@ -12,5 +12,11 @@
   "diffEditor.maxComputationTime": 0,
   "window.title": "${rootPath}${separator}${dirty}${activeEditorShort}${separator}${profileName}",
   "editor.minimap.enabled": false,
-  "extensions.ignoreRecommendations": true
+  "extensions.ignoreRecommendations": true,
+  "redhat.telemetry.enabled": false,
+  "files.autoSave": "onFocusChange",
+  "csharp.debug.justMyCode": false,
+  "dotnet.unitTestDebuggingOptions": {
+    "justMyCode": false
+  }
 }
