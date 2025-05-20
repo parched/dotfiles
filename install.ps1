@@ -35,9 +35,16 @@ if (-not $gitExists) {
 $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')
 
 Write-Host "🚀  Initializing dotfiles"
-chezmoi init parched --apply
+if (-not (Test-Path "$env:USERPROFILE\.local\share\chezmoi\.git")) {
+    chezmoi init parched
+    if (-not $?) {
+        Write-Host "❌  Failed to initialize chezmoi."
+        exit 1
+    }
+}
+chezmoi apply
 if (-not $?) {
-    Write-Host "❌  Failed to initialize chezmoi."
+    Write-Host "❌  Failed to apply chezmoi."
     exit 1
 }
 
