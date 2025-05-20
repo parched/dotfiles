@@ -1,6 +1,4 @@
 {{ $email := promptString "email" -}}
-{{ $githubUsername := promptString "githubUsername" -}}
 
 data:
     email: {{ $email | quote }}
-    githubUsername: {{ $githubUsername }}
