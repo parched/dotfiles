@@ -72,6 +72,7 @@ properties:
       directives:
         description: Install required VS workloads from vsconfig file
         allowPrerelease: true
+        securityContext: elevated
       settings:
         productId: Microsoft.VisualStudio.Product.Professional
         channelId: VisualStudio.17.Release
