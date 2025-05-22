@@ -158,6 +158,8 @@ properties:
       directives:
         description: Configure PowerToys
       settings:
+        GeneralSettings:
+          Startup: true
         KeyboardManager:
           Enabled: true
 
