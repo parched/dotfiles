@@ -1,5 +1,5 @@
 setx npm_config_cache "J:\packages\npm"
-setx YARN_CACHE_FOLDER "J:\packages\yarn"
+setx YARN_GLOBAL_FOLDER "J:\packages\yarn"
 
 setx NUGET_PACKAGES "J:\packages\nuget"
 
