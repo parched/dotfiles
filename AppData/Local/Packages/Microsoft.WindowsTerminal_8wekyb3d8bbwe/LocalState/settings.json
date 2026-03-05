@@ -12,12 +12,12 @@
             "keys": "ctrl+c"
         },
         {
-            "id": "Terminal.PasteFromClipboard",
-            "keys": "ctrl+v"
-        },
-        {
             "id": "Terminal.FindText",
             "keys": "ctrl+shift+f"
+        },
+        {
+            "id": "Terminal.PasteFromClipboard",
+            "keys": "ctrl+v"
         },
         {
             "id": "Terminal.DuplicatePaneAuto",
@@ -94,6 +94,18 @@
                 "hidden": false,
                 "name": "Developer PowerShell for VS 2022",
                 "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "guid": "{37d43f1f-6476-5ceb-b8df-269324edf426}",
+                "hidden": false,
+                "name": "Ubuntu",
+                "source": "Microsoft.WSL"
+            },
+            {
+                "guid": "{8e818d37-9635-588e-8c54-894e9b671627}",
+                "hidden": false,
+                "name": "podman-machine-default",
+                "source": "Microsoft.WSL"
             }
         ]
     },
