@@ -3,9 +3,5 @@
 /LICENSE
 /README.md
 
-{{ if ne .chezmoi.os "windows" }}
-/AppData/**/*
-{{ end }}
-
 # These scripts can be called directly from ~/.local/share/chezmoi/setup
 /setup/**/*
