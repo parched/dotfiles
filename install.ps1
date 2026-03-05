@@ -42,7 +42,7 @@ if (-not (Test-Path "$env:USERPROFILE\.local\share\chezmoi\.git")) {
         exit 1
     }
 }
-chezmoi apply
+chezmoi apply --less-interactive
 if (-not $?) {
     Write-Host "❌  Failed to apply chezmoi."
     exit 1

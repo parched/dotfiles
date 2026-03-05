@@ -25,3 +25,6 @@ fi
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
+export VOLTA_HOME="$HOME/.volta"
+PATH="$VOLTA_HOME/bin:$PATH"
+PATH="$HOME/.dotnet:$PATH"
