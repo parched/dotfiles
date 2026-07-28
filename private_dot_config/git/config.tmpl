@@ -23,7 +23,8 @@
 	rbi = rebase -i
 	rbc = rebase --continue
 	rba = rebase --abort
-	roh = rebase origin/HEAD
+	roh = rebase origin/HEAD --interactive --update-refs
+	rbs = "!f() { [ -z \"$1\" ] && echo \"Usage: git rbs <branch>\" && exit 1; git reset --soft $(git merge-base HEAD \"$1\") && git commit -C ORIG_HEAD && git rebase \"$1\"; }; f"
 	fu = absorb --and-rebase
 	nb = switch origin/HEAD -c
 [rebase]
