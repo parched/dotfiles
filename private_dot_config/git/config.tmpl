@@ -3,7 +3,7 @@
 	email = {{ .email | quote }}
 {{- if and (eq .chezmoi.os "linux") (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
 [credential]
-        helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe
+	helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe
 {{- end }}
 [color]
 	ui = true
@@ -27,6 +27,7 @@
 	rbs = "!f() { [ -z \"$1\" ] && echo \"Usage: git rbs <branch>\" && exit 1; git reset --soft $(git merge-base HEAD \"$1\") && git commit -C ORIG_HEAD && git rebase \"$1\"; }; f"
 	fu = absorb --and-rebase
 	nb = switch origin/HEAD -c
+	b = for-each-ref --sort=-committerdate refs/heads/ --format='%(color:yellow)%(committerdate:relative)%(color:reset) %(HEAD)%(color:green)%(refname:short)%(color:reset)%(color:cyan) -> %(upstream:short)%(color:reset) %(color:magenta)%(upstream:track)%(color:reset) %(color:blue)%(objectname:short)%(color:reset) %(color:white)%(subject)%(color:reset)'
 [rebase]
 	autoSquash = true
 	autoStash = true
@@ -35,10 +36,11 @@
 [advice]
 	detachedHead = false
 [filter "lfs"]
-        clean = git-lfs clean -- %f
-        smudge = git-lfs smudge -- %f
-        process = git-lfs filter-process
-        required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
 [credential "github.com"]
-        useHttpPath = true
-
+	useHttpPath = true
+[init]
+	defaultBranch = main
