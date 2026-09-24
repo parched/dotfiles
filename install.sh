@@ -47,6 +47,20 @@ fi
 echo "Applying chezmoi configuration..."
 "$chezmoi" apply --less-interactive
 
+os_release="$(. /etc/os-release 2>/dev/null && echo "${ID:-}:${VARIANT_ID:-}")" || true
+
+if [ "$os_release" = "fedora:cosmic-atomic" ]; then
+  echo "Adding Flathub remote..."
+  flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+  if ! flatpak info com.google.Chrome >/dev/null 2>&1; then
+    echo "Installing Google Chrome from Flathub..."
+    flatpak install -y --noninteractive flathub com.google.Chrome
+  else
+    echo "Google Chrome is already installed."
+  fi
+fi
+
 if "$with_langs"; then
   volta="$HOME/.volta/bin/volta"
   if [ ! -x "$volta" ]; then
