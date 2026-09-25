@@ -47,6 +47,14 @@ fi
 echo "Applying chezmoi configuration..."
 "$chezmoi" apply --less-interactive
 
+claude="$bin_dir/claude"
+if [ ! -x "$claude" ]; then
+  echo "Installing Claude Code..."
+  fetch "https://claude.ai/install.sh" | bash
+else
+  echo "Claude Code is already installed at $claude."
+fi
+
 os_release="$(. /etc/os-release 2>/dev/null && echo "${ID:-}:${VARIANT_ID:-}")" || true
 
 if [ "$os_release" = "fedora:cosmic-atomic" ]; then
