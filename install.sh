@@ -59,6 +59,38 @@ if [ "$os_release" = "fedora:cosmic-atomic" ]; then
   else
     echo "Google Chrome is already installed."
   fi
+
+  vscode_repo="/etc/yum.repos.d/vscode.repo"
+  if [ ! -f "$vscode_repo" ]; then
+    echo "Adding VS Code repository..."
+    sudo tee "$vscode_repo" >/dev/null <<'EOF'
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=1
+autorefresh=1
+type=rpm-md
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+EOF
+  else
+    echo "VS Code repository is already added."
+  fi
+
+  rpm_packages=()
+  for package in code git-credential-libsecret; do
+    if ! rpm -q "$package" >/dev/null 2>&1; then
+      rpm_packages+=("$package")
+    else
+      echo "$package is already installed."
+    fi
+  done
+
+  if [ "${#rpm_packages[@]}" -gt 0 ]; then
+    echo "Layering ${rpm_packages[*]} with rpm-ostree..."
+    rpm-ostree install --idempotent "${rpm_packages[@]}"
+    echo "Reboot to finish installing layered packages."
+  fi
 fi
 
 if "$with_langs"; then

@@ -4,6 +4,9 @@
 {{- if and (eq .chezmoi.os "linux") (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
 [credential]
 	helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe
+{{- else if and (eq .chezmoi.os "linux") (eq (get .chezmoi.osRelease "id") "fedora") (eq (get .chezmoi.osRelease "variantID") "cosmic-atomic") }}
+[credential]
+	helper = libsecret
 {{- end }}
 [color]
 	ui = true
