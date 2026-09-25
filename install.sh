@@ -92,8 +92,27 @@ EOF
     echo "VS Code repository is already added."
   fi
 
+  gcm_version="2.9.1"
+  gcm_dir="$HOME/.local/share/gcm"
+  gcm="$bin_dir/git-credential-manager"
+  if [ "$("$gcm" --version 2>/dev/null | cut -d+ -f1)" != "$gcm_version" ]; then
+    case "$(uname -m)" in
+      x86_64) gcm_arch="x64" ;;
+      aarch64) gcm_arch="arm64" ;;
+      *) echo "Unsupported architecture for Git Credential Manager: $(uname -m)" >&2; exit 1 ;;
+    esac
+    echo "Installing Git Credential Manager $gcm_version to $gcm_dir..."
+    rm -rf "$gcm_dir"
+    mkdir -p "$gcm_dir" "$bin_dir"
+    fetch "https://github.com/git-ecosystem/git-credential-manager/releases/download/v$gcm_version/gcm-linux-$gcm_arch-$gcm_version.tar.gz" \
+      | tar -xz -C "$gcm_dir"
+    ln -sf "$gcm_dir/git-credential-manager" "$gcm"
+  else
+    echo "Git Credential Manager $gcm_version is already installed at $gcm."
+  fi
+
   rpm_packages=()
-  for package in code git-credential-libsecret; do
+  for package in code; do
     if ! rpm -q "$package" >/dev/null 2>&1; then
       rpm_packages+=("$package")
     else
