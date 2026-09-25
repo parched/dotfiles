@@ -68,6 +68,13 @@ if [ "$os_release" = "fedora:cosmic-atomic" ]; then
     echo "Google Chrome is already installed."
   fi
 
+  if [ "$(xdg-settings get default-web-browser 2>/dev/null)" != "com.google.Chrome.desktop" ]; then
+    echo "Setting Google Chrome as the default web browser..."
+    xdg-settings set default-web-browser com.google.Chrome.desktop
+  else
+    echo "Google Chrome is already the default web browser."
+  fi
+
   vscode_repo="/etc/yum.repos.d/vscode.repo"
   if [ ! -f "$vscode_repo" ]; then
     echo "Adding VS Code repository..."
