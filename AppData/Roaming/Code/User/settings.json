@@ -50,4 +50,7 @@
   "vim.vimrc.enable": true,
   "vitest.shellType": "terminal",
   "window.title": "${rootPath}${separator}${dirty}${activeEditorShort}${separator}${profileName}",
+  "dotfiles.installCommand": "install.sh",
+  "dotfiles.repository": "https://github.com/parched/dotfiles.git",
+  "dotfiles.targetPath": "~/.local/share/chezmoi",
 }
