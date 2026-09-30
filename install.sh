@@ -37,9 +37,15 @@ else
   echo "chezmoi is already installed at $chezmoi."
 fi
 
-if [ ! -d "$HOME/.local/share/chezmoi/.git" ]; then
+source_dir="$HOME/.local/share/chezmoi"
+config="${XDG_CONFIG_HOME:-$HOME/.config}/chezmoi/chezmoi.yaml"
+if [ ! -d "$source_dir/.git" ]; then
   echo "Initializing chezmoi with GitHub user '$github_user'..."
   "$chezmoi" init "$github_user"
+elif [ ! -f "$config" ]; then
+  # Already cloned (e.g. by VS Code dotfiles), so just generate the config.
+  echo "Initializing chezmoi from existing checkout at $source_dir..."
+  "$chezmoi" init
 else
   echo "chezmoi is already initialized."
 fi
