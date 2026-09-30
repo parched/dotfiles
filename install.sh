@@ -68,6 +68,21 @@ if [ "$os_release" = "fedora:cosmic-atomic" ]; then
     echo "Google Chrome is already installed."
   fi
 
+  echo "Allowing Google Chrome to install PWAs..."
+  flatpak override --user \
+    --filesystem=~/.local/share/applications:create \
+    --filesystem=~/.local/share/icons:create \
+    com.google.Chrome
+
+  # PWA .desktop files set Icon= to an absolute path under Chrome's sandbox
+  # data dir, but the icons are written to ~/.local/share/icons. flextop only
+  # symlinks data/applications to the host, so link data/icons the same way.
+  chrome_icons="$HOME/.var/app/com.google.Chrome/data/icons"
+  if [ ! -e "$chrome_icons" ]; then
+    mkdir -p "$(dirname "$chrome_icons")"
+    ln -s "$HOME/.local/share/icons" "$chrome_icons"
+  fi
+
   if [ "$(xdg-settings get default-web-browser 2>/dev/null)" != "com.google.Chrome.desktop" ]; then
     echo "Setting Google Chrome as the default web browser..."
     xdg-settings set default-web-browser com.google.Chrome.desktop
