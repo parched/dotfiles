@@ -1,6 +1,10 @@
 [user]
-	name = "James Duley"
+{{- if hasKey . "name" }}
+	name = {{ .name | quote }}
+{{- end }}
+{{- if hasKey . "email" }}
 	email = {{ .email | quote }}
+{{- end }}
 {{- if and (eq .chezmoi.os "linux") (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
 [credential]
 	helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe
