@@ -6,3 +6,7 @@ README.md
 
 # These scripts can be called directly from ~/.local/share/chezmoi/setup
 setup/**/*
+
+{{ if get . "noGitConfig" -}}
+.config/git/config
+{{- end }}

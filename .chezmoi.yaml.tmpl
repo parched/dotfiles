@@ -1,8 +1,10 @@
-{{ if stdinIsATTY -}}
-{{ $name := promptStringOnce . "name" "name" -}}
-{{ $email := promptStringOnce . "email" "email" -}}
+{{ $noGitConfig := or (eq (env "DOTFILES_NO_GIT_CONFIG") "1") (get . "noGitConfig" | default false) -}}
 
 data:
+    noGitConfig: {{ $noGitConfig }}
+{{- if stdinIsATTY }}
+{{- $name := promptStringOnce . "name" "name" }}
+{{- $email := promptStringOnce . "email" "email" }}
     name: {{ $name | quote }}
     email: {{ $email | quote }}
 {{- end }}

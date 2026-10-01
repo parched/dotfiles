@@ -5,13 +5,15 @@ set -euo pipefail
 github_user="parched"
 with_langs=false
 force=false
+no_git_config=false
 
 for arg in "$@"; do
   case "$arg" in
     --with-langs) with_langs=true ;;
     --force) force=true ;;
+    --no-git-config) no_git_config=true ;;
     *)
-      echo "Usage: $0 [--with-langs] [--force]" >&2
+      echo "Usage: $0 [--with-langs] [--force] [--no-git-config]" >&2
       exit 1
       ;;
   esac
@@ -38,6 +40,11 @@ if [ ! -x "$chezmoi" ]; then
   fetch "https://chezmoi.io/get" | sh -s -- -b "$bin_dir"
 else
   echo "chezmoi is already installed at $chezmoi."
+fi
+
+if "$no_git_config"; then
+  # Read by .chezmoi.yaml.tmpl when generating the config.
+  export DOTFILES_NO_GIT_CONFIG=1
 fi
 
 source_dir="$HOME/.local/share/chezmoi"
