@@ -4,15 +4,18 @@ set -euo pipefail
 
 github_user="parched"
 with_langs=false
+force=false
 
-if [ "$#" -gt 1 ] || { [ "$#" -eq 1 ] && [ "$1" != "--with-langs" ]; }; then
-  echo "Usage: $0 [--with-langs]" >&2
-  exit 1
-fi
-
-if [ "$#" -eq 1 ]; then
-  with_langs=true
-fi
+for arg in "$@"; do
+  case "$arg" in
+    --with-langs) with_langs=true ;;
+    --force) force=true ;;
+    *)
+      echo "Usage: $0 [--with-langs] [--force]" >&2
+      exit 1
+      ;;
+  esac
+done
 
 has() { command -v "$1" >/dev/null 2>&1; }
 
@@ -51,7 +54,11 @@ else
 fi
 
 echo "Applying chezmoi configuration..."
-"$chezmoi" apply --less-interactive
+if "$force"; then
+  "$chezmoi" apply --force
+else
+  "$chezmoi" apply --less-interactive
+fi
 
 claude="$bin_dir/claude"
 if [ ! -x "$claude" ]; then
