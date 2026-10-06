@@ -160,6 +160,99 @@ EOF
     rpm-ostree install --idempotent "${rpm_packages[@]}"
     echo "Reboot to finish installing layered packages."
   fi
+
+  # Writes content to a file (as root with --sudo), setting changed=true if it differed.
+  update_file() {
+    local run=()
+    if [ "$1" = "--sudo" ]; then run=(sudo); shift; fi
+    local path="$1" content="$2"
+    if [ "$(cat "$path" 2>/dev/null)" = "$content" ]; then
+      return
+    fi
+    changed=true
+    "${run[@]}" mkdir -p "$(dirname "$path")"
+    printf '%s\n' "$content" | "${run[@]}" tee "$path" >/dev/null
+  }
+
+  rpm_ostreed_conf="/etc/rpm-ostreed.conf"
+  if ! grep -qx 'AutomaticUpdatePolicy=stage' "$rpm_ostreed_conf"; then
+    echo "Setting rpm-ostree to stage updates automatically..."
+    if grep -qE '^#?AutomaticUpdatePolicy=' "$rpm_ostreed_conf"; then
+      sudo sed -i -E 's/^#?AutomaticUpdatePolicy=.*/AutomaticUpdatePolicy=stage/' "$rpm_ostreed_conf"
+    else
+      sudo sed -i '/^\[Daemon\]/a AutomaticUpdatePolicy=stage' "$rpm_ostreed_conf"
+    fi
+    if ! grep -qx 'AutomaticUpdatePolicy=stage' "$rpm_ostreed_conf"; then
+      echo "Failed to set AutomaticUpdatePolicy in $rpm_ostreed_conf" >&2
+      exit 1
+    fi
+    sudo rpm-ostree reload
+  else
+    echo "rpm-ostree already stages updates automatically."
+  fi
+
+  if ! systemctl is-enabled --quiet rpm-ostreed-automatic.timer; then
+    echo "Enabling automatic base image updates..."
+    sudo systemctl enable --now rpm-ostreed-automatic.timer
+  else
+    echo "Automatic base image updates are already enabled."
+  fi
+
+  flatpak_timer_unit() {
+    cat <<EOF
+[Unit]
+Description=Daily $1 Flatpak update
+
+[Timer]
+OnCalendar=daily
+RandomizedDelaySec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+  }
+
+  flatpak_service_unit() {
+    cat <<EOF
+[Unit]
+Description=Update $1 Flatpaks and remove unused runtimes
+$2
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/flatpak --$1 update --noninteractive --assumeyes
+ExecStart=/usr/bin/flatpak --$1 uninstall --unused --noninteractive --assumeyes
+EOF
+  }
+
+  system_units="/etc/systemd/system"
+  changed=false
+  update_file --sudo "$system_units/flatpak-system-update.service" \
+    "$(flatpak_service_unit system $'Wants=network-online.target\nAfter=network-online.target\n')"
+  update_file --sudo "$system_units/flatpak-system-update.timer" "$(flatpak_timer_unit system)"
+  if "$changed"; then
+    echo "Installing automatic system Flatpak updates..."
+    sudo systemctl daemon-reload
+  fi
+  if "$changed" || ! systemctl is-enabled --quiet flatpak-system-update.timer; then
+    sudo systemctl enable --now flatpak-system-update.timer
+  else
+    echo "Automatic system Flatpak updates are already enabled."
+  fi
+
+  user_units="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user"
+  changed=false
+  update_file "$user_units/flatpak-user-update.service" "$(flatpak_service_unit user "")"
+  update_file "$user_units/flatpak-user-update.timer" "$(flatpak_timer_unit user)"
+  if "$changed"; then
+    echo "Installing automatic user Flatpak updates..."
+    systemctl --user daemon-reload
+  fi
+  if "$changed" || ! systemctl --user is-enabled --quiet flatpak-user-update.timer; then
+    systemctl --user enable --now flatpak-user-update.timer
+  else
+    echo "Automatic user Flatpak updates are already enabled."
+  fi
 fi
 
 if "$with_langs"; then
