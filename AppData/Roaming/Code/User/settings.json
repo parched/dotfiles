@@ -53,4 +53,8 @@
   "dotfiles.installCommand": "devcontainer-install.sh",
   "dotfiles.repository": "https://github.com/parched/dotfiles.git",
   "dotfiles.targetPath": "~/.local/share/chezmoi",
+  "remote.autoForwardPortsSource": "hybrid",
+  "js/ts.experimental.useTsgo": true,
+  "claudeCode.preferredLocation": "panel",
+  "claudeCode.hideOnboarding": true,
 }
