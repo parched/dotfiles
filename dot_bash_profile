@@ -1,0 +1,6 @@
+# ~/.bash_profile: executed by bash(1) for login shells.
+# Defer to ~/.profile, which also sources ~/.bashrc when running bash.
+
+if [ -f "$HOME/.profile" ]; then
+    . "$HOME/.profile"
+fi
