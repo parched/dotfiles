@@ -57,4 +57,5 @@
   "js/ts.experimental.useTsgo": true,
   "claudeCode.preferredLocation": "panel",
   "claudeCode.hideOnboarding": true,
+  "git.blame.editorDecoration.enabled": true,
 }
