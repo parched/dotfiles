@@ -29,8 +29,13 @@ if [ -x "$HOME/.dotnet/dotnet" ] ; then
     export SSL_CERT_DIR="$HOME/.aspnet/dev-certs/trust:${SSL_CERT_DIR:-/etc/ssl/certs}"
 fi
 
-export VISUAL=vim
-export EDITOR=vim
+if command -v vim >/dev/null 2>&1 ; then
+    EDITOR=vim
+else
+    EDITOR=vi
+fi
+export EDITOR
+export VISUAL="$EDITOR"
 
 # if running bash
 if [ -n "$BASH_VERSION" ]; then

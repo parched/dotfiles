@@ -13,6 +13,13 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
+# prefer VS Code as the editor inside its integrated terminal, which runs a
+# non-login shell and so inherits EDITOR from ~/.profile
+if [ "$TERM_PROGRAM" = "vscode" ] && command -v code >/dev/null 2>&1; then
+    export EDITOR="code --wait"
+    export VISUAL="$EDITOR"
+fi
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
