@@ -1,0 +1,7 @@
+[Unit]
+Description=Update user Flatpaks and remove unused runtimes
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/flatpak --user update --noninteractive --assumeyes
+ExecStart=/usr/bin/flatpak --user uninstall --unused --noninteractive --assumeyes

@@ -10,3 +10,8 @@ setup/**/*
 {{ if get . "noGitConfig" -}}
 .config/git/config
 {{- end }}
+
+{{ if ne (dig "osRelease" "variantID" "" .chezmoi) "cosmic-atomic" -}}
+.config/systemd
+.var
+{{- end }}

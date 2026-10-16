@@ -1,0 +1,111 @@
+{{ if eq (dig "osRelease" "variantID" "" .chezmoi) "cosmic-atomic" -}}
+#!/usr/bin/env bash
+
+# System-level setup for Fedora COSMIC Atomic. Needs sudo, so it's kept apart
+# from the user script to only prompt when this file changes.
+
+set -euo pipefail
+
+vscode_repo="/etc/yum.repos.d/vscode.repo"
+if [ ! -f "$vscode_repo" ]; then
+  echo "Adding VS Code repository..."
+  sudo tee "$vscode_repo" >/dev/null <<'EOF'
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=1
+autorefresh=1
+type=rpm-md
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+EOF
+else
+  echo "VS Code repository is already added."
+fi
+
+rpm_packages=()
+for package in code; do
+  if ! rpm -q "$package" >/dev/null 2>&1; then
+    rpm_packages+=("$package")
+  else
+    echo "$package is already installed."
+  fi
+done
+
+if [ "${#rpm_packages[@]}" -gt 0 ]; then
+  echo "Layering ${rpm_packages[*]} with rpm-ostree..."
+  rpm-ostree install --idempotent "${rpm_packages[@]}"
+  echo "Reboot to finish installing layered packages."
+fi
+
+rpm_ostreed_conf="/etc/rpm-ostreed.conf"
+if ! grep -qx 'AutomaticUpdatePolicy=stage' "$rpm_ostreed_conf"; then
+  echo "Setting rpm-ostree to stage updates automatically..."
+  if grep -qE '^#?AutomaticUpdatePolicy=' "$rpm_ostreed_conf"; then
+    sudo sed -i -E 's/^#?AutomaticUpdatePolicy=.*/AutomaticUpdatePolicy=stage/' "$rpm_ostreed_conf"
+  else
+    sudo sed -i '/^\[Daemon\]/a AutomaticUpdatePolicy=stage' "$rpm_ostreed_conf"
+  fi
+  if ! grep -qx 'AutomaticUpdatePolicy=stage' "$rpm_ostreed_conf"; then
+    echo "Failed to set AutomaticUpdatePolicy in $rpm_ostreed_conf" >&2
+    exit 1
+  fi
+  sudo rpm-ostree reload
+else
+  echo "rpm-ostree already stages updates automatically."
+fi
+
+if ! systemctl is-enabled --quiet rpm-ostreed-automatic.timer; then
+  echo "Enabling automatic base image updates..."
+  sudo systemctl enable --now rpm-ostreed-automatic.timer
+else
+  echo "Automatic base image updates are already enabled."
+fi
+
+# Writes content to a root-owned file, setting changed=true if it differed.
+update_file() {
+  local path="$1" content="$2"
+  if [ "$(cat "$path" 2>/dev/null)" = "$content" ]; then
+    return
+  fi
+  changed=true
+  printf '%s\n' "$content" | sudo tee "$path" >/dev/null
+}
+
+system_units="/etc/systemd/system"
+changed=false
+update_file "$system_units/flatpak-system-update.service" "$(cat <<'EOF'
+[Unit]
+Description=Update system Flatpaks and remove unused runtimes
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/flatpak --system update --noninteractive --assumeyes
+ExecStart=/usr/bin/flatpak --system uninstall --unused --noninteractive --assumeyes
+EOF
+)"
+update_file "$system_units/flatpak-system-update.timer" "$(cat <<'EOF'
+[Unit]
+Description=Daily system Flatpak update
+
+[Timer]
+OnCalendar=daily
+RandomizedDelaySec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+)"
+if "$changed"; then
+  echo "Installing automatic system Flatpak updates..."
+  sudo systemctl daemon-reload
+fi
+if "$changed" || ! systemctl is-enabled --quiet flatpak-system-update.timer; then
+  sudo systemctl enable --now flatpak-system-update.timer
+else
+  echo "Automatic system Flatpak updates are already enabled."
+fi
+{{ end -}}

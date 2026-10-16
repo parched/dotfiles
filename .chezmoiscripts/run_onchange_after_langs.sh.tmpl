@@ -1,0 +1,34 @@
+{{ if and (ne .chezmoi.os "windows") (get . "withLangs") -}}
+#!/usr/bin/env bash
+
+# Only runs on machines initialized with install.sh --with-langs.
+
+set -euo pipefail
+
+{{ template "fetch.sh" }}
+volta="$HOME/.volta/bin/volta"
+if [ ! -x "$volta" ]; then
+  echo "Installing Volta..."
+  fetch "https://get.volta.sh" | bash -s -- --skip-setup
+  echo "Installing Node.js with Volta..."
+  "$volta" install node
+else
+  echo "Volta is already installed at $volta."
+fi
+
+uv="$HOME/.local/bin/uv"
+if [ ! -x "$uv" ]; then
+  echo "Installing uv..."
+  fetch "https://astral.sh/uv/install.sh" | sh
+else
+  echo "uv is already installed at $uv."
+fi
+
+dotnet="$HOME/.dotnet/dotnet"
+if [ ! -x "$dotnet" ]; then
+  echo "Installing .NET SDK..."
+  fetch "https://dot.net/v1/dotnet-install.sh" | bash
+else
+  echo ".NET SDK is already installed at $dotnet."
+fi
+{{ end -}}

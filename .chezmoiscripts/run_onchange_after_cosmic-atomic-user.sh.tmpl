@@ -1,0 +1,61 @@
+{{ if eq (dig "osRelease" "variantID" "" .chezmoi) "cosmic-atomic" -}}
+#!/usr/bin/env bash
+
+# User-level setup for Fedora COSMIC Atomic. Re-runs when this script or the
+# managed systemd units change:
+# flatpak-user-update.service: {{ include "private_dot_config/systemd/user/flatpak-user-update.service" | sha256sum }}
+# flatpak-user-update.timer: {{ include "private_dot_config/systemd/user/flatpak-user-update.timer" | sha256sum }}
+
+set -euo pipefail
+
+{{ template "fetch.sh" }}
+bin_dir="$HOME/.local/bin"
+
+echo "Adding Flathub remote..."
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+if ! flatpak info com.google.Chrome >/dev/null 2>&1; then
+  echo "Installing Google Chrome from Flathub..."
+  flatpak install -y --noninteractive flathub com.google.Chrome
+else
+  echo "Google Chrome is already installed."
+fi
+
+# The icons symlink that PWA .desktop files rely on is managed by chezmoi at
+# ~/.var/app/com.google.Chrome/data/icons.
+echo "Allowing Google Chrome to install PWAs..."
+flatpak override --user \
+  --filesystem=~/.local/share/applications:create \
+  --filesystem=~/.local/share/icons:create \
+  com.google.Chrome
+
+if [ "$(xdg-settings get default-web-browser 2>/dev/null)" != "com.google.Chrome.desktop" ]; then
+  echo "Setting Google Chrome as the default web browser..."
+  xdg-settings set default-web-browser com.google.Chrome.desktop
+else
+  echo "Google Chrome is already the default web browser."
+fi
+
+gcm_version="2.9.1"
+gcm_dir="$HOME/.local/share/gcm"
+gcm="$bin_dir/git-credential-manager"
+if [ "$("$gcm" --version 2>/dev/null | cut -d+ -f1)" != "$gcm_version" ]; then
+  case "$(uname -m)" in
+    x86_64) gcm_arch="x64" ;;
+    aarch64) gcm_arch="arm64" ;;
+    *) echo "Unsupported architecture for Git Credential Manager: $(uname -m)" >&2; exit 1 ;;
+  esac
+  echo "Installing Git Credential Manager $gcm_version to $gcm_dir..."
+  rm -rf "$gcm_dir"
+  mkdir -p "$gcm_dir" "$bin_dir"
+  fetch "https://github.com/git-ecosystem/git-credential-manager/releases/download/v$gcm_version/gcm-linux-$gcm_arch-$gcm_version.tar.gz" \
+    | tar -xz -C "$gcm_dir"
+  ln -sf "$gcm_dir/git-credential-manager" "$gcm"
+else
+  echo "Git Credential Manager $gcm_version is already installed at $gcm."
+fi
+
+echo "Enabling automatic user Flatpak updates..."
+systemctl --user daemon-reload
+systemctl --user enable --now flatpak-user-update.timer
+{{ end -}}

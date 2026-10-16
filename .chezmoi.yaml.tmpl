@@ -1,10 +1,17 @@
 {{ $noGitConfig := or (eq (env "DOTFILES_NO_GIT_CONFIG") "1") (get . "noGitConfig" | default false) -}}
+{{ $withLangs := or (eq (env "DOTFILES_WITH_LANGS") "1") (get . "withLangs" | default false) -}}
 
 data:
     noGitConfig: {{ $noGitConfig }}
+    withLangs: {{ $withLangs }}
+{{- /* Without a TTY (e.g. curl | bash) keep any earlier answers. */}}
+{{- $name := get . "name" | default "" }}
+{{- $email := get . "email" | default "" }}
 {{- if stdinIsATTY }}
-{{- $name := promptStringOnce . "name" "name" }}
-{{- $email := promptStringOnce . "email" "email" }}
+{{- $name = promptStringOnce . "name" "name" }}
+{{- $email = promptStringOnce . "email" "email" }}
+{{- end }}
+{{- if and $name $email }}
     name: {{ $name | quote }}
     email: {{ $email | quote }}
 {{- end }}

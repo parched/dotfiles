@@ -1,0 +1,14 @@
+{{ if ne .chezmoi.os "windows" -}}
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+{{ template "fetch.sh" }}
+claude="$HOME/.local/bin/claude"
+if [ ! -x "$claude" ]; then
+  echo "Installing Claude Code..."
+  fetch "https://claude.ai/install.sh" | bash
+else
+  echo "Claude Code is already installed at $claude."
+fi
+{{ end -}}
