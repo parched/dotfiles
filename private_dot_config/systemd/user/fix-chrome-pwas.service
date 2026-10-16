@@ -1,0 +1,6 @@
+[Unit]
+Description=Make Chrome PWA launchers match their Wayland app_id
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/fix-chrome-pwas

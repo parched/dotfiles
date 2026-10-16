@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+# Makes Flatpak Chrome PWAs match their windows in the COSMIC dock.
+#
+# On Wayland a PWA window's app_id is chrome-<id>-<profile>, but Flatpak Chrome
+# names its .desktop file com.google.Chrome.flextop.chrome-<id>-<profile>.desktop
+# and sets StartupWMClass=crx_<id>, so the dock can't match the window to its
+# launcher and shows it as an unknown app. For each PWA, write a copy named
+# after the app_id and hide Chrome's original from the launcher.
+#
+# Idempotent: it only writes when something differs, so it's safe to run from a
+# path unit watching the same directory.
+
+set -euo pipefail
+
+apps="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
+prefix="com.google.Chrome.flextop."
+marker="X-Generated-By=fix-chrome-pwas"
+changed=false
+
+for src in "$apps/$prefix"chrome-*.desktop; do
+  [ -e "$src" ] || continue
+  app_id="$(basename "$src" .desktop)"
+  app_id="${app_id#"$prefix"}"
+  dst="$apps/$app_id.desktop"
+
+  want="$(sed -e '/^NoDisplay=/d' -e '/^StartupWMClass=/d' \
+    -e "0,/^\[Desktop Entry\]\$/s//&\n$marker\nStartupWMClass=$app_id/" "$src")"
+  if [ "$(cat "$dst" 2>/dev/null)" != "$want" ]; then
+    echo "Writing $dst"
+    printf '%s\n' "$want" >"$dst"
+    changed=true
+  fi
+
+  if ! grep -qx 'NoDisplay=true' "$src"; then
+    echo "Hiding $src"
+    sed -i -e '/^NoDisplay=/d' -e '0,/^\[Desktop Entry\]$/s//&\nNoDisplay=true/' "$src"
+    changed=true
+  fi
+done
+
+# Remove copies of PWAs that Chrome has uninstalled.
+for dst in "$apps"/chrome-*.desktop; do
+  [ -e "$dst" ] || continue
+  if grep -qx "$marker" "$dst" && [ ! -e "$apps/$prefix$(basename "$dst")" ]; then
+    echo "Removing $dst"
+    rm "$dst"
+    changed=true
+  fi
+done
+
+if "$changed" && command -v update-desktop-database >/dev/null 2>&1; then
+  update-desktop-database "$apps"
+fi

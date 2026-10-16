@@ -3,6 +3,8 @@
 
 # User-level setup for Fedora COSMIC Atomic. Re-runs when this script or the
 # managed systemd units change:
+# fix-chrome-pwas.path: {{ include "private_dot_config/systemd/user/fix-chrome-pwas.path" | sha256sum }}
+# fix-chrome-pwas.service: {{ include "private_dot_config/systemd/user/fix-chrome-pwas.service" | sha256sum }}
 # flatpak-user-update.service: {{ include "private_dot_config/systemd/user/flatpak-user-update.service" | sha256sum }}
 # flatpak-user-update.timer: {{ include "private_dot_config/systemd/user/flatpak-user-update.timer" | sha256sum }}
 
@@ -55,7 +57,8 @@ else
   echo "Git Credential Manager $gcm_version is already installed at $gcm."
 fi
 
-echo "Enabling automatic user Flatpak updates..."
+echo "Enabling automatic user Flatpak updates and Chrome PWA fixes..."
 systemctl --user daemon-reload
-systemctl --user enable --now flatpak-user-update.timer
+systemctl --user enable --now flatpak-user-update.timer fix-chrome-pwas.path
+"$bin_dir/fix-chrome-pwas"
 {{ end -}}
