@@ -1,0 +1,11 @@
+{{ if eq .chezmoi.os "windows" -}}
+$ErrorActionPreference = "Stop"
+
+$claude = Join-Path $env:USERPROFILE ".local\bin\claude.exe"
+if (-not (Test-Path $claude)) {
+    Write-Host "Installing Claude Code..."
+    Invoke-RestMethod https://claude.ai/install.ps1 | Invoke-Expression
+} else {
+    Write-Host "Claude Code is already installed at $claude."
+}
+{{ end -}}

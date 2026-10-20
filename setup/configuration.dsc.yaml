@@ -59,52 +59,25 @@ properties:
 
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       directives:
-        description: Installing Microsoft.VisualStudio.2022.Professional
+        description: Installing Microsoft.VisualStudio.Professional
         allowPrerelease: true
         securityContext: current
       settings:
-        id: "Microsoft.VisualStudio.2022.Professional"
+        id: "Microsoft.VisualStudio.Professional"
         source: winget
-      id: Microsoft.VisualStudio.2022.Professional
+      id: Microsoft.VisualStudio.Professional
     - resource: Microsoft.VisualStudio.DSC/VSComponents
       dependsOn:
-        - Microsoft.VisualStudio.2022.Professional
+        - Microsoft.VisualStudio.Professional
       directives:
         description: Install required VS workloads from vsconfig file
         allowPrerelease: true
         securityContext: elevated
       settings:
         productId: Microsoft.VisualStudio.Product.Professional
-        channelId: VisualStudio.17.Release
+        channelId: VisualStudio.18.Release
         vsConfigFile: "${WinGetConfigRoot}/.vsconfig"
 
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      directives:
-        description: Installing astral-sh.uv
-        allowPrerelease: true
-        securityContext: current
-      settings:
-        id: "astral-sh.uv"
-        source: winget
-      id: astral-sh.uv
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      directives:
-        description: Installing Volta.Volta
-        allowPrerelease: true
-        securityContext: current
-      settings:
-        id: "Volta.Volta"
-        source: winget
-      id: Volta.Volta
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      directives:
-        description: Installing JetBrains.Toolbox
-        allowPrerelease: true
-        securityContext: current
-      settings:
-        id: "JetBrains.Toolbox"
-        source: winget
-      id: JetBrains.Toolbox
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       directives:
         description: Installing git absorb
@@ -116,31 +89,13 @@ properties:
       id: tummychow.git-absorb
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       directives:
-        description: Installing Rustlang.Rustup
+        description: Installing GitHub.cli
         allowPrerelease: true
         securityContext: current
       settings:
-        id: Rustlang.Rustup
+        id: GitHub.cli
         source: winget
-      id: Rustlang.Rustup
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      directives:
-        description: Installing Redhat.Podman
-        allowPrerelease: true
-        securityContext: current
-      settings:
-        id: Redhat.Podman
-        source: winget
-      id: Redhat.Podman
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      directives:
-        description: Installing Redhat.Podman-Desktop
-        allowPrerelease: true
-        securityContext: current
-      settings:
-        id: Redhat.Podman-Desktop
-        source: winget
-      id: Redhat.Podman-Desktop
+      id: GitHub.cli
 
     ### Productivity packages ###
     - resource: Microsoft.WinGet.DSC/WinGetPackage

@@ -34,24 +34,23 @@ if (-not $gitExists) {
 # Refresh path
 $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')
 
+# DOTFILES_WITH_LANGS and DOTFILES_NO_GIT_CONFIG are read by .chezmoi.yaml.tmpl
+# when generating the config.
 Write-Host "🚀  Initializing dotfiles"
 if (-not (Test-Path "$env:USERPROFILE\.local\share\chezmoi\.git")) {
     chezmoi init parched
-    if (-not $?) {
-        Write-Host "❌  Failed to initialize chezmoi."
-        exit 1
-    }
+} else {
+    # Already cloned, so just (re)generate the config in case the environment
+    # variables have changed. Answers to earlier prompts are kept.
+    chezmoi init
+}
+if (-not $?) {
+    Write-Host "❌  Failed to initialize chezmoi."
+    exit 1
 }
 chezmoi apply --less-interactive
 if (-not $?) {
     Write-Host "❌  Failed to apply chezmoi."
-    exit 1
-}
-
-Write-Host "Running winget config..."
-winget configure "$env:USERPROFILE\.local\share\chezmoi\setup\configuration.dsc.yaml"
-if (-not $?) {
-    Write-Host "❌  Failed to configure winget."
     exit 1
 }
 

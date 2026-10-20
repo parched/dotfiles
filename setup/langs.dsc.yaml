@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+# Only applied on machines initialized with DOTFILES_WITH_LANGS=1.
+
+properties:
+  resources:
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      directives:
+        description: Installing astral-sh.uv
+        allowPrerelease: true
+        securityContext: current
+      settings:
+        id: "astral-sh.uv"
+        source: winget
+      id: astral-sh.uv
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      directives:
+        description: Installing Volta.Volta
+        allowPrerelease: true
+        securityContext: current
+      settings:
+        id: "Volta.Volta"
+        source: winget
+      id: Volta.Volta
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      directives:
+        description: Installing Rustlang.Rustup
+        allowPrerelease: true
+        securityContext: current
+      settings:
+        id: Rustlang.Rustup
+        source: winget
+      id: Rustlang.Rustup
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      directives:
+        description: Installing Redhat.Podman
+        allowPrerelease: true
+        securityContext: current
+      settings:
+        id: Redhat.Podman
+        source: winget
+      id: Redhat.Podman
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      directives:
+        description: Installing Redhat.Podman-Desktop
+        allowPrerelease: true
+        securityContext: current
+      settings:
+        id: Redhat.Podman-Desktop
+        source: winget
+      id: Redhat.Podman-Desktop
+
+  configurationVersion: 0.2.0

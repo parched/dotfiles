@@ -1,0 +1,13 @@
+{{ if eq .chezmoi.os "windows" -}}
+# Re-runs when the winget configuration or the Visual Studio components change:
+# configuration.dsc.yaml: {{ include "setup/configuration.dsc.yaml" | sha256sum }}
+# .vsconfig: {{ include "setup/.vsconfig" | sha256sum }}
+
+$ErrorActionPreference = "Stop"
+
+Write-Host "Running winget configuration..."
+winget configure --file "{{ joinPath .chezmoi.sourceDir "setup" "configuration.dsc.yaml" }}" --accept-configuration-agreements
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "winget configure failed with exit code $LASTEXITCODE."
+}
+{{ end -}}

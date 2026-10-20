@@ -1,0 +1,12 @@
+{{ if and (eq .chezmoi.os "windows") (get . "withLangs") -}}
+# Only runs on machines initialized with DOTFILES_WITH_LANGS=1.
+# langs.dsc.yaml: {{ include "setup/langs.dsc.yaml" | sha256sum }}
+
+$ErrorActionPreference = "Stop"
+
+Write-Host "Running winget configuration for languages..."
+winget configure --file "{{ joinPath .chezmoi.sourceDir "setup" "langs.dsc.yaml" }}" --accept-configuration-agreements
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "winget configure failed with exit code $LASTEXITCODE."
+}
+{{ end -}}
