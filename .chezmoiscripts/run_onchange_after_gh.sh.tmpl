@@ -1,0 +1,26 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+{{ template "fetch.sh" }}
+gh_min_version="2.102.0"
+bin_dir="$HOME/.local/bin"
+
+# Any gh on PATH counts, as long as it's new enough.
+current_version="$(PATH="$bin_dir:$PATH" gh --version 2>/dev/null | awk 'NR == 1 { print $3 }' || true)"
+if [ -z "$current_version" ] || [ "$(printf '%s\n%s\n' "$gh_min_version" "$current_version" | sort -V | head -n1)" != "$gh_min_version" ]; then
+  case "$(uname -m)" in
+    x86_64) gh_arch="amd64" ;;
+    aarch64) gh_arch="arm64" ;;
+    *) echo "Unsupported architecture for GitHub CLI: $(uname -m)" >&2; exit 1 ;;
+  esac
+  gh_release="gh_${gh_min_version}_linux_$gh_arch"
+  echo "Installing GitHub CLI $gh_min_version to $bin_dir/gh..."
+  mkdir -p "$bin_dir"
+  fetch "https://github.com/cli/cli/releases/download/v$gh_min_version/$gh_release.tar.gz" \
+    | tar -xz -C "$bin_dir" --strip-components=2 "$gh_release/bin/gh"
+else
+  echo "GitHub CLI $current_version is already installed."
+fi
+{{ end -}}
