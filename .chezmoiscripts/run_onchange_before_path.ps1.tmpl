@@ -1,0 +1,37 @@
+{{ if eq .chezmoi.os "windows" -}}
+# Windows counterpart of the ~/bin and ~/.local/bin entries in .profile.
+$ErrorActionPreference = "Stop"
+
+$dirs = @("%USERPROFILE%\bin", "%USERPROFILE%\.local\bin")
+
+# Edit the registry directly: [Environment]::SetEnvironmentVariable rewrites
+# Path as REG_SZ, which stops existing %VAR% entries expanding.
+$key = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey("Environment", $true)
+$raw = $key.GetValue("Path", "", "DoNotExpandEnvironmentNames")
+$entries = @($raw -split ";" | Where-Object { $_ })
+$expanded = $entries | ForEach-Object { [Environment]::ExpandEnvironmentVariables($_).TrimEnd("\") }
+
+$added = @()
+foreach ($dir in $dirs) {
+    if ($expanded -notcontains [Environment]::ExpandEnvironmentVariables($dir)) {
+        $added += $dir
+    }
+}
+
+if ($added.Count -eq 0) {
+    Write-Host "User PATH already includes bin and .local\bin."
+    return
+}
+
+$key.SetValue("Path", (($added + $entries) -join ";"), "ExpandString")
+Write-Host "Added to user PATH: $($added -join ', ')"
+
+# Tell Explorer and other listeners so new processes see the change without
+# signing out.
+Add-Type -Namespace Win32 -Name Env -MemberDefinition @"
+[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint Msg, UIntPtr wParam, string lParam, uint fuFlags, uint uTimeout, out UIntPtr lpdwResult);
+"@
+$result = [UIntPtr]::Zero
+[Win32.Env]::SendMessageTimeout([IntPtr]0xffff, 0x1a, [UIntPtr]::Zero, "Environment", 2, 5000, [ref]$result) | Out-Null
+{{ end -}}
