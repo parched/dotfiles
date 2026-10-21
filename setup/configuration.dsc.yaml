@@ -107,16 +107,6 @@ properties:
         id: "Microsoft.PowerToys"
         source: winget
       id: Microsoft.PowerToys
-    - resource: Microsoft.PowerToys.Configure/PowerToysConfigure
-      dependsOn:
-        - Microsoft.PowerToys
-      directives:
-        description: Configure PowerToys
-      settings:
-        GeneralSettings:
-          Startup: true
-        KeyboardManager:
-          Enabled: true
 
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       directives:
