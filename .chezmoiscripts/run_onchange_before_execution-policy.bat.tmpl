@@ -1,0 +1,14 @@
+{{ if eq .chezmoi.os "windows" -}}
+@echo off
+setlocal
+rem A PSModulePath inherited from PowerShell 7 stops Windows PowerShell loading
+rem its own modules; cleared, it falls back to its defaults.
+set PSModulePath=
+rem Lets Windows PowerShell run the .ps1 scripts that follow. PowerShell 7 keeps
+rem its own policy, which configuration.dsc.yaml sets.
+rem An override from the Process scope (e.g. a parent run with -ExecutionPolicy
+rem Bypass) still reports an error after the setting is saved, so only fail if
+rem Group Policy is what overrides it.
+powershell -NoLogo -NoProfile -Command "try { Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force } catch { if ($_.FullyQualifiedErrorId -notlike 'ExecutionPolicyOverride*' -or (Get-ExecutionPolicy -Scope MachinePolicy) -ne 'Undefined' -or (Get-ExecutionPolicy -Scope UserPolicy) -ne 'Undefined') { throw } }"
+exit /b %ERRORLEVEL%
+{{ end -}}
