@@ -4,22 +4,9 @@
 
 properties:
   resources:
-    ### Settings ###
-    - resource: Microsoft.Windows.Developer/DeveloperMode
-      directives:
-        description: Enable Developer Mode
-        allowPrerelease: true
-        securityContext: elevated
-      settings:
-        Ensure: Present
-    - resource: Microsoft.Windows.Developer/UserAccessControl
-      id: UserAccessControl
-      directives:
-        allowPrerelease: true
-        description: Configure User Access Control
-      settings:
-        AdminConsentPromptBehavior: "RequireConsentOnSecureDesktop"
+    # Machine-wide settings and Visual Studio are in admin.dsc.yaml.
 
+    ### Settings ###
     - resource: ComputerManagementDsc/PowerShellExecutionPolicy
       id: PowerShellCurrentUserExecutionPolicy
       directives:
@@ -56,27 +43,6 @@ properties:
         id: "Microsoft.PowerShell"
         source: winget
       id: Microsoft.PowerShell
-
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      directives:
-        description: Installing Microsoft.VisualStudio.Professional
-        allowPrerelease: true
-        securityContext: current
-      settings:
-        id: "Microsoft.VisualStudio.Professional"
-        source: winget
-      id: Microsoft.VisualStudio.Professional
-    - resource: Microsoft.VisualStudio.DSC/VSComponents
-      dependsOn:
-        - Microsoft.VisualStudio.Professional
-      directives:
-        description: Install required VS workloads from vsconfig file
-        allowPrerelease: true
-        securityContext: elevated
-      settings:
-        productId: Microsoft.VisualStudio.Product.Professional
-        channelId: VisualStudio.18.Release
-        vsConfigFile: "${WinGetConfigRoot}/.vsconfig"
 
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       directives:

@@ -1,13 +1,38 @@
 {{ if eq .chezmoi.os "windows" -}}
 # Re-runs when the winget configuration or the Visual Studio components change:
+# admin.dsc.yaml: {{ include "setup/admin.dsc.yaml" | sha256sum }}
 # configuration.dsc.yaml: {{ include "setup/configuration.dsc.yaml" | sha256sum }}
 # .vsconfig: {{ include "setup/.vsconfig" | sha256sum }}
 
 $ErrorActionPreference = "Stop"
 
+# winget doesn't reliably elevate units marked `securityContext: elevated`, so
+# run the admin-only configuration in its own elevated window (one UAC prompt).
+# The window stays open on failure so the errors can be read.
+Write-Host "Running elevated winget configuration..."
+$adminConfig = "{{ joinPath .chezmoi.sourceDir "setup" "admin.dsc.yaml" }}"
+# Elevation can come back without a process handle (e.g. when an elevation
+# broker starts the process), which makes -PassThru and -Wait fail. So the
+# elevated window writes its exit code to a file, and we wait for that.
+$adminResult = Join-Path $env:TEMP "chezmoi-winget-admin-$([guid]::NewGuid()).txt"
+Start-Process powershell -Verb RunAs -ArgumentList @(
+    '-NoLogo', '-NoProfile', '-Command',
+    "`$code = 1; try { winget configure --file '$adminConfig' --accept-configuration-agreements; `$code = `$LASTEXITCODE; if (`$code) { Read-Host 'Failed, press Enter to close' } } finally { Set-Content '$adminResult' `$code }"
+)
+Write-Host "Waiting for the elevated window to finish..."
+while (-not (Test-Path $adminResult)) {
+    Start-Sleep -Seconds 2
+}
+$adminExitCode = [int](Get-Content $adminResult)
+Remove-Item $adminResult
+$adminFailed = $adminExitCode -ne 0
+
 Write-Host "Running winget configuration..."
 winget configure --file "{{ joinPath .chezmoi.sourceDir "setup" "configuration.dsc.yaml" }}" --accept-configuration-agreements
 if ($LASTEXITCODE -ne 0) {
     Write-Error "winget configure failed with exit code $LASTEXITCODE."
+}
+if ($adminFailed) {
+    Write-Error "Elevated winget configure failed with exit code $adminExitCode."
 }
 {{ end -}}
