@@ -108,4 +108,13 @@ if "$changed" || ! systemctl is-enabled --quiet flatpak-system-update.timer; the
 else
   echo "Automatic system Flatpak updates are already enabled."
 fi
+
+changed=false
+update_file "/etc/sysctl.d/90-inotify.conf" "fs.inotify.max_user_instances = 1024"
+if "$changed"; then
+  echo "Raising inotify instance limit..."
+  sudo sysctl --system >/dev/null
+else
+  echo "inotify instance limit is already raised."
+fi
 {{ end -}}
