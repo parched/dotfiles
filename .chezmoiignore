@@ -4,6 +4,12 @@ install.ps1
 LICENSE
 README.md
 
+{{ if eq .chezmoi.os "windows" -}}
+.claude/statusline.sh
+{{- else -}}
+.claude/statusline.ps1
+{{- end }}
+
 # These scripts can be called directly from ~/.local/share/chezmoi/setup
 setup/**/*
 
