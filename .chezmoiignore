@@ -12,6 +12,8 @@ setup/**/*
 {{- end }}
 
 {{ if ne (dig "osRelease" "variantID" "" .chezmoi) "cosmic-atomic" -}}
+.config/cosmic
 .config/systemd
+.config/voxtype
 .var
 {{- end }}

@@ -7,6 +7,8 @@
 # fix-chrome-pwas.service: {{ include "private_dot_config/systemd/user/fix-chrome-pwas.service" | sha256sum }}
 # flatpak-user-update.service: {{ include "private_dot_config/systemd/user/flatpak-user-update.service" | sha256sum }}
 # flatpak-user-update.timer: {{ include "private_dot_config/systemd/user/flatpak-user-update.timer" | sha256sum }}
+# voxtype.service: {{ include "private_dot_config/systemd/user/voxtype.service" | sha256sum }}
+# voxtype config: {{ include "private_dot_config/voxtype/config.toml" | sha256sum }}
 
 set -euo pipefail
 
@@ -57,8 +59,35 @@ else
   echo "Git Credential Manager $gcm_version is already installed at $gcm."
 fi
 
-echo "Enabling automatic user Flatpak updates and Chrome PWA fixes..."
+voxtype_version="1.1.1"
+voxtype="$bin_dir/voxtype"
+if [ "$("$voxtype" --version 2>/dev/null | awk '{ print $2 }')" != "$voxtype_version" ]; then
+  if [ "$(uname -m)" != "x86_64" ]; then
+    echo "Unsupported architecture for voxtype: $(uname -m)" >&2; exit 1
+  elif compgen -G "/dev/dri/renderD*" >/dev/null; then
+    voxtype_build="vulkan"
+  elif grep -qw avx512f /proc/cpuinfo; then
+    voxtype_build="avx512"
+  elif grep -qw avx2 /proc/cpuinfo; then
+    voxtype_build="avx2"
+  else
+    voxtype_build="baseline"
+  fi
+  echo "Installing voxtype $voxtype_version ($voxtype_build) to $voxtype..."
+  mkdir -p "$bin_dir"
+  fetch "https://github.com/peteonrails/voxtype/releases/download/v$voxtype_version/voxtype-$voxtype_version-linux-x86_64-$voxtype_build" \
+    > "$voxtype.tmp"
+  chmod +x "$voxtype.tmp"
+  mv "$voxtype.tmp" "$voxtype"
+else
+  echo "voxtype $voxtype_version is already installed at $voxtype."
+fi
+"$voxtype" setup --download --model large-v3-turbo --quiet
+
+echo "Enabling automatic user Flatpak updates, Chrome PWA fixes and voxtype..."
 systemctl --user daemon-reload
-systemctl --user enable --now flatpak-user-update.timer fix-chrome-pwas.path
+systemctl --user enable --now flatpak-user-update.timer fix-chrome-pwas.path voxtype.service
+# Pick up a new voxtype binary or config.
+systemctl --user restart voxtype.service
 "$bin_dir/fix-chrome-pwas"
 {{ end -}}

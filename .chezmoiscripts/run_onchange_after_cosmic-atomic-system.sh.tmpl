@@ -24,7 +24,7 @@ else
 fi
 
 rpm_packages=()
-for package in code; do
+for package in code wtype; do
   if ! rpm -q "$package" >/dev/null 2>&1; then
     rpm_packages+=("$package")
   else
