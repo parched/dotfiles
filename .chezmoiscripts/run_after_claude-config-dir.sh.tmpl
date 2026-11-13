@@ -1,0 +1,15 @@
+{{- if and (ne .chezmoi.os "windows") (env "CLAUDE_CONFIG_DIR") -}}
+#!/usr/bin/env bash
+# Dev containers may set CLAUDE_CONFIG_DIR to a persistent volume; point it at
+# the chezmoi-managed settings so they still apply. Re-runs every apply in case
+# Claude Code replaced the link with a regular file.
+set -euo pipefail
+dir=${CLAUDE_CONFIG_DIR/#\~/$HOME}
+# -ef compares the resolved directories, so trailing slashes, a literal ~ and
+# symlinks to ~/.claude are all treated as the default location.
+if [ "$dir" -ef "$HOME/.claude" ]; then
+  exit 0
+fi
+mkdir -p "$dir"
+ln -sfn "$HOME/.claude/settings.json" "$dir/settings.json"
+{{ end -}}
