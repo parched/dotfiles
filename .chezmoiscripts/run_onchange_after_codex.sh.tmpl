@@ -1,0 +1,18 @@
+{{ if ne .chezmoi.os "windows" -}}
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+{{ template "fetch.sh" }}
+codex="$HOME/.local/bin/codex"
+if [ ! -x "$codex" ]; then
+  echo "Installing Codex..."
+  # .profile already puts ~/.local/bin on PATH. Having it on PATH here stops
+  # the installer appending its own PATH block to the chezmoi-managed .bashrc.
+  # Non-interactive skips its "Start Codex now?" prompt.
+  fetch "https://chatgpt.com/codex/install.sh" \
+    | PATH="$HOME/.local/bin:$PATH" CODEX_NON_INTERACTIVE=1 sh
+else
+  echo "Codex is already installed at $codex."
+fi
+{{ end -}}

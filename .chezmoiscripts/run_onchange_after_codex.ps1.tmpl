@@ -1,0 +1,13 @@
+{{ if eq .chezmoi.os "windows" -}}
+$ErrorActionPreference = "Stop"
+
+$codex = Join-Path $env:LOCALAPPDATA "Programs\OpenAI\Codex\bin\codex.exe"
+if (-not (Test-Path $codex)) {
+    Write-Host "Installing Codex..."
+    # Skips the installer's "Start Codex now?" prompt.
+    $env:CODEX_NON_INTERACTIVE = "1"
+    Invoke-RestMethod https://chatgpt.com/codex/install.ps1 | Invoke-Expression
+} else {
+    Write-Host "Codex is already installed at $codex."
+}
+{{ end -}}
