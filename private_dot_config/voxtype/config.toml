@@ -92,7 +92,10 @@ max_duration_secs = 300
 
 [audio.feedback]
 # Enable audio feedback sounds (beeps when recording starts/stops)
-enabled = true
+# Disabled: after an ALSA underrun the always-open output stream spins a core
+# on POLLERR forever (and floods journald). Re-enable once fixed upstream:
+# https://github.com/peteonrails/voxtype/issues/859
+enabled = false
 #
 # Sound theme: "default", "subtle", "mechanical", or path to custom theme directory
 theme = "subtle"
