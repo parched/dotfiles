@@ -1,6 +1,16 @@
 {{ $noGitConfig := or (eq (env "DOTFILES_NO_GIT_CONFIG") "1") (get . "noGitConfig" | default false) -}}
 {{ $withLangs := or (eq (env "DOTFILES_WITH_LANGS") "1") (get . "withLangs" | default false) -}}
 
+{{- /*
+Dev containers may mount ~/.claude and ~/.codex from one volume. They share a
+device, so chezmoi reuses one temp dir for both, and renaming its temp file
+across the two mounts fails with "invalid cross-device link". Write files in
+place instead; atomic writes matter little in a container.
+*/}}
+{{- if or (stat "/run/.containerenv") (stat "/.dockerenv") }}
+safe: false
+{{- end }}
+
 data:
     noGitConfig: {{ $noGitConfig }}
     withLangs: {{ $withLangs }}
