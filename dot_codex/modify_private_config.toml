@@ -1,8 +1,9 @@
 {{- /* chezmoi:modify-template */ -}}
 {{- /*
 Codex writes to config.toml itself (trusted projects, /model, TUI notices),
-so only the keys below are managed and everything else is kept. Comments in
-the file are not preserved.
+so only the keys below are managed and everything else is kept. The file is
+left untouched when they're already set; otherwise it's rewritten, which
+reformats it and drops comments.
 
 daemon_auto_start: stop Codex leaving an app-server daemon and a self-updater
 running after the CLI exits.
@@ -11,4 +12,8 @@ running after the CLI exits.
 {{- if .chezmoi.stdin -}}
 {{-   $config = fromToml .chezmoi.stdin -}}
 {{- end -}}
-{{- toToml (setValueAtPath "features.daemon_auto_start" false $config) -}}
+{{- if eq (toString (dig "features" "daemon_auto_start" "" $config)) "false" -}}
+{{-   .chezmoi.stdin -}}
+{{- else -}}
+{{-   toToml (setValueAtPath "features.daemon_auto_start" false $config) -}}
+{{- end -}}
