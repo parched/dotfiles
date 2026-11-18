@@ -88,7 +88,7 @@ fi
 echo "Enabling automatic user Flatpak updates, Chrome PWA fixes and voxtype..."
 systemctl --user daemon-reload
 systemctl --user enable --now flatpak-user-update.timer fix-chrome-pwas.path voxtype.service
-# Pick up a new voxtype binary or config.
-systemctl --user restart voxtype.service
+# Pick up a new voxtype binary or config, and a changed timer schedule.
+systemctl --user restart voxtype.service flatpak-user-update.timer
 "$bin_dir/fix-chrome-pwas"
 {{ end -}}
