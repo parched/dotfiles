@@ -102,8 +102,10 @@ EOF
 if "$changed"; then
   echo "Installing automatic system Flatpak updates..."
   sudo systemctl daemon-reload
-fi
-if "$changed" || ! systemctl is-enabled --quiet flatpak-system-update.timer; then
+  sudo systemctl enable flatpak-system-update.timer
+  # A running timer keeps its old schedule until restarted.
+  sudo systemctl restart flatpak-system-update.timer
+elif ! systemctl is-enabled --quiet flatpak-system-update.timer; then
   sudo systemctl enable --now flatpak-system-update.timer
 else
   echo "Automatic system Flatpak updates are already enabled."
