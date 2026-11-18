@@ -1,0 +1,13 @@
+{
+  "theme": "auto",
+  "model": "opus",
+  "effortLevel": "high",
+  "statusLine": {
+    "type": "command",
+{{- if eq .chezmoi.os "windows" }}
+    "command": "pwsh -NoProfile -File {{ .chezmoi.homeDir | replace "\\" "/" }}/.claude/statusline.ps1"
+{{- else }}
+    "command": "~/.claude/statusline.sh"
+{{- end }}
+  }
+}
