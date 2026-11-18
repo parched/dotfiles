@@ -2,7 +2,8 @@
 #!/usr/bin/env bash
 
 # User-level setup for Fedora COSMIC Atomic. Re-runs when this script or the
-# managed systemd units change:
+# managed files it sets up change:
+# fix-chrome-pwas: {{ include "dot_local/bin/executable_fix-chrome-pwas" | sha256sum }}
 # fix-chrome-pwas.path: {{ include "private_dot_config/systemd/user/fix-chrome-pwas.path" | sha256sum }}
 # fix-chrome-pwas.service: {{ include "private_dot_config/systemd/user/fix-chrome-pwas.service" | sha256sum }}
 # flatpak-user-update.service: {{ include "private_dot_config/systemd/user/flatpak-user-update.service" | sha256sum }}
