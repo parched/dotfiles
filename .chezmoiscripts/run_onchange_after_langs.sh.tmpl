@@ -19,7 +19,9 @@ fi
 uv="$HOME/.local/bin/uv"
 if [ ! -x "$uv" ]; then
   echo "Installing uv..."
-  fetch "https://astral.sh/uv/install.sh" | sh
+  # .profile already puts ~/.local/bin on PATH, so stop the installer editing
+  # the chezmoi-managed shell profiles.
+  fetch "https://astral.sh/uv/install.sh" | UV_NO_MODIFY_PATH=1 sh
 else
   echo "uv is already installed at $uv."
 fi
